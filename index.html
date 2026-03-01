@@ -1,767 +1,827 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kasbaum Negócios Imobiliários</title>
+    <title>KASBAUM — Negócios Imobiliários | Especialista em Goiânia</title>
+    <meta name="description" content="Consultoria imobiliária de alto padrão em Goiânia. Rigor técnico, transparência absoluta e decisões baseadas em dados com Vinícius Kasbaum e Mércia Miranda.">
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,300;0,9..144,400;1,9..144,100;1,9..144,300;1,9..144,400&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        h1, h2, h3, h4, .font-serif { font-family: 'Playfair Display', serif; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-        
-        /* Loader Animation */
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 3px solid #000;
-            width: 24px;
-            height: 24px;
-            -webkit-animation: spin 1s linear infinite; /* Safari */
-            animation: spin 1s linear infinite;
+        /* ── RESET & ROOT ── */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; outline: none; }
+        html { scroll-behavior:smooth; font-size:16px; }
+
+        :root {
+            --ink:      #0c0b09;
+            --cream:    #f5f0e8;
+            --sand:     #e8e0d0;
+            --gold:     #b8965a;
+            --rust:     #8b3a1a;
+            --grey:     #8a8070;
+            --border:   rgba(12,11,9,0.1);
+
+            --font-display: 'Fraunces', serif;
+            --font-ui:      'Syne', sans-serif;
+            --font-mono:    'DM Mono', monospace;
+            --transition:   all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+
+        body { background: var(--cream); color: var(--ink); font-family: var(--font-ui); overflow-x: hidden; -webkit-font-smoothing: antialiased; cursor: none; }
+
+        /* ── CURSOR ── */
+        #cur-dot { position:fixed; width:6px; height:6px; border-radius:50%; background: var(--rust); pointer-events:none; z-index:9999; transform: translate(-50%,-50%); transition: transform .1s ease; mix-blend-mode: multiply; }
+        #cur-ring { position:fixed; width:40px; height:40px; border-radius:50%; border:1.5px solid rgba(139,58,26,.35); pointer-events:none; z-index:9998; transform: translate(-50%,-50%); transition: width .3s ease, height .3s ease; }
+        body:has(a:hover, button:hover, .card:hover, select:hover, input:focus, .final-branding:hover, .contact-pill:hover, .social-link:hover, .gallery-img-container:hover) #cur-ring { width:65px; height:65px; border-color:rgba(139,58,26,.6); }
+        
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            #cur-dot, #cur-ring { display: none !important; }
+        }
+
+        /* ── GRAIN ── */
+        body::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:1000; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E"); opacity:.5; }
+
+        /* ── NAV ── */
+        nav { position:fixed; top:0; left:0; right:0; z-index:1500; padding:28px 60px; display:flex; justify-content:space-between; align-items:center; transition: all 0.4s; }
+        nav.scrolled { padding:16px 60px; background: rgba(245,240,232,0.96); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+        .nav-logo { font-family: var(--font-display); font-size:1.5rem; color: var(--ink); text-decoration:none; display:flex; flex-direction:column; line-height:1; cursor: pointer; }
+        .nav-logo span { font-size:.55rem; font-family:var(--font-mono); letter-spacing:.3em; color:var(--gold); margin-top:3px; text-transform:uppercase; }
+        .nav-links { display:flex; gap:36px; align-items:center; list-style:none; }
+        .nav-links a { font-size:.7rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--grey); text-decoration:none; font-weight:500; cursor: pointer; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--gold); }
+
+        /* Componente Nav Transparente/Outline */
+        .btn-nav {
+            padding: 10px 24px;
+            border: 1px solid rgba(184, 150, 90, 0.4);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--grey);
+            transition: var(--transition);
+        }
+        .btn-nav:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ── BUTTONS GENERAL ── */
+        .btn-solid { padding: 16px 32px; background: var(--ink); color: var(--cream); border-radius: 999px; font-weight: 600; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 12px; transition: var(--transition); border: 1px solid rgba(184, 150, 90, 0.2); cursor: pointer; font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.15em; width: fit-content; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn-solid i { transition: transform 0.4s ease; }
+        .btn-solid:hover { background: var(--rust); transform: translateY(-5px); border-color: var(--rust); box-shadow: 0 15px 30px rgba(139, 58, 26, 0.25); color: #fff; }
+        .btn-solid:hover i { transform: translate(3px, -2px) rotate(10deg); }
+
+        .btn-outline { background: transparent; color: var(--ink); border: 1.2px solid var(--ink); box-shadow: none; }
+        .btn-outline:hover { background: var(--ink); color: var(--cream); border-color: var(--ink); box-shadow: 0 10px 20px rgba(12, 11, 9, 0.15); }
+
+        .hero-btn { width: 100%; max-width: 440px; justify-content: space-between; padding: 20px 32px; }
+
+        /* ── HERO ── */
+        .hero { min-height: 80vh; display: grid; grid-template-columns: 40% 60%; position: relative; overflow: hidden; background: var(--ink); }
+        .hero-l { background: var(--cream); display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 120px 4vw 80px 60px; z-index: 10; position: relative; }
+        .hero-h1 { font-family: var(--font-display); font-size: clamp(2.4rem, 4.2vw, 5rem); font-weight: 300; line-height: 1.05; margin-bottom: 24px; color: var(--ink); }
+        .hero-h1 em { font-style: italic; color: var(--rust); display: block; font-size: 0.8em; margin-top: 8px; }
+        .hero-r { position: relative; overflow: hidden; background: var(--ink); }
+        .hero-r-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: brightness(1); transition: transform 3s ease; }
+        .hero:hover .hero-r-img { transform: scale(1.03); }
+
+        /* ── CONTACT OVERLAY (PILLS DE ALTA PERFORMANCE) ── */
+        .contact-overlay { position: absolute; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: space-between; padding: 0 4%; pointer-events: none; z-index: 50; }
+        
+        .contact-pill { 
+            pointer-events: auto; 
+            background: rgba(12, 11, 9, 0.4); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(184,150,90,0.25); 
+            padding: 24px; 
+            border-radius: 6px; 
+            color: var(--cream); 
+            text-decoration: none; 
+            display: flex; 
+            flex-direction: column; 
+            transition: var(--transition); 
+            min-width: 240px; 
+            line-height: 1.4; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+        }
+        
+        .pill-left { align-items: flex-start; text-align: left; }
+        .pill-right { align-items: flex-end; text-align: right; }
+        
+        .contact-pill:hover { 
+            background: rgba(12, 11, 9, 0.75); 
+            border-color: var(--gold); 
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
+        }
+        
+        .pill-tag { font-family: var(--font-mono); font-size: 0.45rem; letter-spacing: 0.4em; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; line-height: 1; }
+        .pill-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 300; line-height: 1.1; color: var(--cream); }
+        
+        .pill-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 16px 0; width: 100%; }
+        
+        .pill-actions { display: flex; align-items: center; gap: 20px; width: 100%; }
+        .pill-left .pill-actions { justify-content: flex-start; }
+        .pill-right .pill-actions { justify-content: flex-end; }
+        .social-link { color: var(--gold); display: flex; align-items: center; transition: 0.3s; text-decoration: none; }
+        .social-link:hover { color: var(--cream); transform: scale(1.15); }
+
+        /* ── GRID DE IMÓVEIS (4 COLUNAS) ── */
+        .section-imoveis { padding:60px 60px 100px; position: relative; z-index: 10; min-height: 400px; }
+        #properties-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:2px; margin-top:20px; }
+        .card { background: var(--ink); position:relative; overflow:hidden; cursor:pointer; aspect-ratio:3/4; display:flex; flex-direction:column; justify-content:flex-end; text-decoration: none; }
+        .card-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:sepia(10%) brightness(.7); transition:transform 1s ease; }
+        .card:hover .card-img { transform:scale(1.08); filter:sepia(0%) brightness(.85); }
+        .card-content { position:relative; z-index:2; padding:24px; background:linear-gradient(to top, rgba(12,11,9,0.95) 0%, transparent 100%); }
+        .card-title { font-family:var(--font-display); font-size:0.95rem; font-weight:300; color:var(--cream); margin-bottom:10px; line-height: 1.2; }
+        .card-price { font-family:var(--font-display); font-size:1.3rem; color:var(--gold); }
+        .card-hood { font-family:var(--font-mono); font-size:0.45rem; color:var(--gold); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.1em; }
+
+        /* ── TYPOGRAPHY ── */
+        .section-h2 { grid-column: 1 / -1; font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 300; line-height: 1.1; margin-bottom: 60px; color: var(--ink); }
+        .section-h3 { font-family: var(--font-display); font-size: clamp(1.8rem, 3vw, 2.2rem); font-weight: 300; line-height: 1.1; margin-bottom: 20px; color: var(--ink); }
+        .body-p { font-size: 1.05rem; line-height: 1.9; color: var(--grey); text-align: justify; }
+        .body-p strong { font-weight: 600; color: var(--rust); }
+
+        /* ── FILTER BAR ── */
+        .search-section { padding: 40px 60px 20px; background: var(--cream); border-bottom: 1px solid var(--border); position: sticky; top: 80px; z-index: 500; transition: top 0.4s; }
+        nav.scrolled + main .search-section { top: 73px; }
+        .filter-container { display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 24px; align-items: flex-end; padding-bottom: 12px; scrollbar-width: none; }
+        .filter-container::-webkit-scrollbar { display: none; } 
+        .filter-group { flex: 1 1 auto; display: flex; flex-direction: column; gap: 8px; min-width: 160px; }
+        .filter-group label { font-family: var(--font-mono); font-size: 0.55rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.15em; }
+        .input-minimal { background: transparent; border: none; border-bottom: 1.5px solid var(--border); padding: 10px 0; font-family: var(--font-ui); font-size: 0.85rem; color: var(--ink); transition: border-color 0.3s; width: 100%; border-radius: 0; }
+        .input-minimal:focus { border-color: var(--gold); }
+        select.input-minimal { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8070' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right center; }
+        .btn-reset { background: none; border: none; color: var(--rust); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 10px; opacity: 0.6; transition: opacity 0.3s; flex: 0 0 auto; margin-bottom: 4px; }
+        .btn-reset:hover { opacity: 1; transform: rotate(-90deg); }
+
+        /* ── SECTIONS & BIOS (EDITORIAL DESIGN) ── */
+        .services-section { padding: 100px 60px 60px; background: var(--cream); border-top: 1px solid var(--border); position: relative; z-index: 10; }
+        .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1440px; margin: 0 auto; }
+        
+        .bios-section { padding: 100px 60px 120px; background: #fffdfa; border-top: 1px solid var(--border); position: relative; z-index: 10; }
+        .bio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 80px; max-width: 1440px; margin: 0 auto; }
+        .bio-column { display: flex; flex-direction: column; }
+        
+        .bio-tag { font-family: var(--font-mono); font-size: 0.55rem; color: var(--gold); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 16px; display: block; }
+        .bio-name { font-family: var(--font-display); font-size: 2.2rem; font-weight: 300; margin-bottom: 24px; color: var(--ink); line-height: 1.1; }
+        .bio-divider { border: none; border-top: 1px solid rgba(12,11,9,0.1); margin: 32px 0; }
+        
+        .bio-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .stat-box { display: flex; flex-direction: column; }
+        .stat-box span:first-child { font-family: var(--font-mono); font-size: 0.5rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.25em; margin-bottom: 8px; }
+        .stat-box span:last-child { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; color: var(--ink); }
+        
+        /* ── FINAL CONTACT CTA ── */
+        .final-cta-section { padding: 80px 60px; background: var(--cream); border-top: 1px solid var(--border); position: relative; z-index: 10; }
+        .final-cta-container { max-width: 1200px; margin: 0 auto; text-align: center; }
+        .final-cta-header { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); font-weight: 300; margin-bottom: 50px; }
+        .final-cta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .cta-card { background: #fff; padding: 40px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 15px; transition: var(--transition); }
+        .cta-card:hover { transform: translateY(-10px); box-shadow: 0 30px 60px rgba(12,11,9,0.05); }
+        .cta-name { font-family: var(--font-display); font-size: 1.8rem; font-weight: 300; }
+        .cta-creci { font-family: var(--font-mono); font-size: 0.6rem; color: var(--gold); letter-spacing: 0.3em; }
+        .cta-actions { display: flex; gap: 15px; margin-top: 10px; }
+
+        /* ── FINAL BRANDING ── */
+        .final-branding { width: 100%; position: relative; overflow: hidden; background: var(--ink); line-height: 0; z-index: 10; display: flex; }
+        .final-branding img { width: 100%; height: auto; display: block; filter: brightness(0.4) grayscale(100%); transition: transform 2.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        /* ── TICKER ── */
+        .ticker-wrap { overflow:hidden; background:var(--ink); padding:14px 0; border-top:1px solid rgba(255,255,255,.06); }
+        .ticker-track { display:flex; animation:ticker 40s linear infinite; width:max-content; }
+        @keyframes ticker { from{transform:translateX(0);} to{transform:translateX(-50%);} }
+        .ticker-item { font-family:var(--font-mono); font-size:.6rem; letter-spacing:.3em; text-transform:uppercase; color:rgba(245,240,232,0.4); padding:0 40px; display:flex; align-items:center; gap:40px; }
+
+        /* ── PRINT FOOTER (HIDDEN ON WEB) ── */
+        .print-footer { display: none; }
+
+        @media (max-width:1100px) {
+            .hero { grid-template-columns: 1fr; min-height: auto; }
+            .hero-l { padding: 120px 30px 40px; align-items: flex-start; }
+            .hero-r { height: 60svh; min-height: 450px; }
+            .hero-btn { max-width: 100%; }
+            .contact-overlay { flex-direction: column; bottom: 20px; align-items: center; gap: 15px; }
+            .contact-pill { width: 100%; max-width: 320px; text-align: center; align-items: center; }
+            .pill-actions { justify-content: center !important; }
+            #properties-grid { grid-template-columns: repeat(2, 1fr); }
+            .services-grid, .bio-grid, .final-cta-grid { grid-template-columns: 1fr; gap: 40px; }
+            nav, .section-imoveis, .bios-section, .services-section, .final-cta-section { padding-left: 30px; padding-right: 30px; }
+        }
+
+        /* ── DETAIL VIEW ── */
+        .view-hidden { display: none !important; }
+        .view-fade { animation: fadeIn 0.8s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        #detail-view { background: var(--cream); min-height: 100vh; width: 100%; position: relative; z-index: 2000; }
+        .detail-page { padding:160px 60px 80px; max-width: 1440px; margin: 0 auto; }
+        .detail-main-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px 100px; margin-bottom: 100px; align-items: start; }
+        .detail-header-col { grid-column: 1 / 2; }
+        .detail-main-img-trigger { grid-column: 2 / 3; position: relative; cursor: zoom-in; border-radius: 4px; overflow: hidden; box-shadow: 0 50px 100px rgba(0,0,0,0.15); }
+        .detail-desc-col { grid-column: 1 / -1; padding-top: 50px; margin-top: 10px; }
+        .k-tag { font-family:var(--font-mono); font-size:0.65rem; color:var(--gold); margin-bottom:15px; text-transform:uppercase; letter-spacing:0.1em; display:block; }
+        .k-title { font-family:var(--font-display); font-size:clamp(2.2rem,5vw,4rem); font-weight:300; line-height:1.1; margin-bottom:30px; }
+        .k-price { font-family:var(--font-display); font-size:2.5rem; margin-bottom:48px; color:var(--rust); }
+        .k-desc { font-size: 1.1rem; line-height: 2.1; white-space: pre-line; color: var(--grey); text-align: justify; }
+        
+        /* Ajuste Visual da Grid de Especificações (Ficha) */
+        .specs-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:40px 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding:32px 0; margin-top:40px; margin-bottom: 40px; }
+        .spec-box span:first-child { display:block; font-family:var(--font-mono); font-size:0.5rem; color:var(--grey); letter-spacing:0.25em; text-transform:uppercase; margin-bottom:16px; }
+        .spec-box span:last-child { font-family:var(--font-display); font-size:2.2rem; font-weight:400; color:var(--ink); }
+
+        .detail-gallery { display:grid; grid-template-columns: repeat(2, 1fr); gap:24px; margin-top: 80px; }
+        .gallery-img-container { width: 100%; aspect-ratio: 16/10; overflow: hidden; border-radius: 4px; background: var(--sand); cursor: zoom-in; }
+        .gallery-img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .gallery-img-container:hover img { transform: scale(1.05); }
+
+        .back-btn { display:inline-flex; align-items:center; gap:12px; font-family:var(--font-mono); font-size:0.65rem; color:var(--grey); text-transform:uppercase; cursor:pointer; margin-bottom:48px; border:none; background:transparent; text-decoration: none; transition: .3s; }
+        .back-btn:hover { color: var(--rust); }
+        
+        .action-buttons { display: flex; flex-direction: row; gap: 16px; flex-wrap: wrap; margin-top: 50px; }
+
+        /* ── LIGHTBOX ── */
+        #lightbox { position: fixed; inset: 0; background: rgba(12,11,9,0.98); z-index: 5000; display: flex; flex-direction: column; opacity: 0; visibility: hidden; transition: opacity 0.5s ease; }
+        #lightbox.active { opacity: 1; visibility: visible; }
+        .lb-header { padding: 40px 60px; display: flex; justify-content: space-between; align-items: center; color: var(--cream); }
+        .lb-counter { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.3em; }
+        .lb-close { background: none; border: none; color: white; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .lb-close:hover { color: var(--rust); transform: rotate(90deg); }
+        .lb-stage { flex: 1; position: relative; display: flex; align-items: center; justify-content: center; padding: 0 100px; }
+        .lb-img { max-width: 100%; max-height: 85vh; object-fit: contain; opacity: 0; transition: opacity 0.4s ease; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        .lb-img.show { opacity: 1; }
+        .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; color: white; cursor: pointer; padding: 40px; opacity: 0.3; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .lb-nav:hover { opacity: 1; transform: translateY(-50%) scale(1.1); color: var(--gold); }
+
+        /* ── PRINT ── */
+        @media print {
+            @page { size: A4 landscape; margin: 0; }
+            body { 
+                background: #fff !important; 
+                color: #000 !important; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important; 
+            }
+            body::after { display: none !important; }
+            
+            #nav, #list-view, .services-section, #lightbox, .ticker-wrap, footer, .contact-overlay, .final-cta-section { display: none !important; }
+            
+            #detail-view { display: block !important; width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            
+            .detail-page { padding: 0 !important; margin: 0 !important; max-width: 100% !important; background: #fff !important; }
+            
+            .detail-main-grid { 
+                display: grid !important; 
+                grid-template-columns: 50vw 50vw !important; 
+                grid-template-rows: 100vh !important; 
+                width: 100vw !important; 
+                height: 100vh !important; 
+                margin: 0 !important; 
+                padding: 0 !important;
+                overflow: hidden !important; 
+                page-break-after: always !important; 
+                break-after: page !important;
+            }
+            
+            .detail-header-col { 
+                grid-column: 1 / 2 !important; 
+                grid-row: 1 / 2 !important; 
+                padding: 6vh 6vw 6vh 6vw !important; 
+                display: flex !important; 
+                flex-direction: column !important; 
+                justify-content: center !important; 
+                box-sizing: border-box !important;
+                height: 100vh !important;
+            }
+            
+            .detail-desc-col { 
+                display: block !important;
+                padding: 0 6vw 6vh 6vw !important; 
+                margin: 0 !important; 
+                overflow: hidden !important; 
+                box-sizing: border-box !important;
+                border-top: none !important;
+            }
+            
+            .detail-main-img-trigger { 
+                grid-column: 2 / 3 !important; 
+                grid-row: 1 / 3 !important; 
+                width: 100% !important; 
+                height: 100vh !important; 
+                margin: 0 !important; 
+                padding: 0 !important;
+                box-shadow: none !important; 
+                border-radius: 0 !important; 
+            }
+            
+            .detail-main-img-trigger img { 
+                width: 100% !important; 
+                height: 100% !important; 
+                object-fit: cover !important; 
+                border-radius: 0 !important;
+            }
+            
+            .k-tag { font-size: 10pt !important; margin-bottom: 2vh !important; color: #8b3a1a !important; }
+            .k-title { font-size: 26pt !important; line-height: 1.1 !important; margin-bottom: 2vh !important; color: #0c0b09 !important; }
+            .k-price { font-size: 18pt !important; margin-bottom: 2vh !important; color: #b8965a !important; }
+            
+            .specs-grid { 
+                display: grid !important; 
+                grid-template-columns: repeat(4, 1fr) !important; 
+                gap: 2vh 1vw !important; 
+                padding: 2vh 0 !important; 
+                margin: 2vh 0 !important; 
+                border-top: 1px solid #e8e0d0 !important; 
+                border-bottom: 1px solid #e8e0d0 !important; 
+            }
+            
+            .spec-box span:first-child { font-size: 8pt !important; color: #8a8070 !important; margin-bottom: 4px !important; }
+            .spec-box span:last-child { font-size: 12pt !important; color: #0c0b09 !important; }
+            
+            .k-desc { 
+                column-count: 1 !important; 
+                font-size: 10pt !important; 
+                line-height: 1.5 !important; 
+                color: #333 !important; 
+                display: -webkit-box !important; 
+                -webkit-line-clamp: 16 !important; 
+                -webkit-box-orient: vertical !important; 
+                overflow: hidden !important; 
+                text-align: justify !important;
+            }
+            
+            .detail-gallery { 
+                display: block !important; 
+                padding: 4vw !important; 
+                margin: 0 !important; 
+                width: 100vw !important; 
+                background: #fff !important; 
+                box-sizing: border-box !important;
+                font-size: 0 !important;
+            }
+            
+            .gallery-img-container { 
+                display: inline-block !important;
+                background: #f5f0e8 !important; 
+                width: 44vw !important; 
+                height: 40vh !important; 
+                margin: 0 4vw 4vh 0 !important;
+                page-break-inside: avoid !important; 
+                break-inside: avoid !important; 
+                border-radius: 8px !important; 
+                overflow: hidden !important; 
+                vertical-align: top !important;
+            }
+            
+            .gallery-img-container:nth-child(even) {
+                margin-right: 0 !important;
+            }
+            
+            .gallery-img-container img { 
+                width: 100% !important; 
+                height: 100% !important; 
+                object-fit: cover !important; 
+            }
+            
+            .action-buttons, .back-btn { display: none !important; }
+
+            .print-footer {
+                display: block !important;
+                width: 100% !important;
+                text-align: center !important;
+                font-family: var(--font-display) !important;
+                font-size: 20pt !important;
+                font-weight: 300 !important;
+                color: var(--ink) !important;
+                padding: 4vh 0 !important;
+                margin: 4vh 4vw 0 4vw !important;
+                border-top: 1px solid var(--border) !important;
+                page-break-inside: avoid !important;
+                clear: both !important;
+            }
         }
     </style>
 </head>
-<body class="bg-[#FAFAFA] text-gray-900 selection:bg-black selection:text-white">
+<body>
 
-    <nav id="navbar" class="fixed top-0 w-full z-40 transition-all duration-500 py-6 border-b border-transparent">
-        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
-            <div class="flex flex-col z-50 cursor-pointer group" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-                <h1 class="text-2xl font-bold tracking-tighter text-black transition-colors group-hover:opacity-80">KASBAUM</h1>
-                <span class="text-[10px] tracking-[0.3em] uppercase text-gray-500">Negócios Imobiliários</span>
-            </div>
+<nav id="nav">
+    <a href="#" class="nav-logo" id="logo-btn">Kasbaum<span>Negócios Imobiliários</span></a>
+    <ul class="nav-links">
+        <li><a href="#imoveis" id="nav-imoveis-btn">Imóveis</a></li>
+        <!-- Correção: Botão Ghost/Outline implementado -->
+        <li><a href="#consultoria" id="nav-consultoria-btn" class="btn-nav">Consultoria</a></li>
+    </ul>
+</nav>
 
-            <div class="hidden md:flex items-center gap-8">
-                <a href="#imoveis" class="text-sm font-medium text-gray-600 hover:text-black transition-colors">Imóveis</a>
-                <a href="#conceito" class="text-sm font-medium text-gray-600 hover:text-black transition-colors">Conceito</a>
-                <a href="#contato" class="text-sm font-medium text-gray-600 hover:text-black transition-colors">Contato</a>
-                <a href="https://wa.me/5562982495522" target="_blank" class="px-6 py-2.5 bg-black text-white text-sm font-medium rounded-full hover:shadow-lg hover:scale-105 transition-all duration-300">
-                    Fale com o Vinicius
-                </a>
-            </div>
-
-            <button id="mobile-menu-btn" class="md:hidden p-2 z-50 text-black">
-                <i data-lucide="menu"></i>
-            </button>
+<main id="list-view">
+    <section class="hero" id="home">
+        <div class="hero-l">
+            <h1 class="hero-h1">Não vendo metro².<br><em>Vendo decisões bem tomadas.</em></h1>
+            <p class="body-p" style="max-width:340px; margin-bottom:48px;">Rigor técnico e transparência absoluta para o seu próximo passo em Goiânia.</p>
+            <a href="#imoveis" class="btn-solid hero-btn" id="hero-explore-btn">Explorar Portfólio <i data-lucide="arrow-down-right"></i></a>
         </div>
-    </nav>
-
-    <div id="mobile-menu" class="fixed inset-0 bg-white z-40 p-8 flex flex-col justify-center gap-6 transform translate-x-full transition-transform duration-300 md:hidden">
-        <button id="close-menu-btn" class="absolute top-6 right-6 p-2"><i data-lucide="x"></i></button>
-        <a href="#imoveis" class="text-3xl font-light text-gray-900 border-b border-gray-100 pb-4 mobile-link">Imóveis</a>
-        <a href="#conceito" class="text-3xl font-light text-gray-900 border-b border-gray-100 pb-4 mobile-link">Conceito</a>
-        <a href="#contato" class="text-3xl font-light text-gray-900 border-b border-gray-100 pb-4 mobile-link">Contato</a>
-        <a href="https://wa.me/5562982495522" class="mt-4 w-full py-4 bg-black text-white text-center rounded-xl font-bold text-lg">Fale com o Vinicius</a>
-    </div>
-
-    <header class="relative pt-32 pb-20 px-6 md:pt-48 md:pb-32 overflow-hidden bg-white">
-        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-b from-gray-100 to-transparent rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 opacity-60 pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gray-50 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
-
-        <div class="max-w-7xl mx-auto relative z-10">
-            <div class="max-w-4xl">
-                <span class="inline-block py-1.5 px-4 border border-gray-200 rounded-full text-xs font-semibold text-gray-500 mb-8 bg-white/50 backdrop-blur-sm shadow-sm">
-                    CRECI 30.942 GO
-                </span>
-                <h1 class="text-4xl md:text-7xl font-semibold text-black leading-[1.1] mb-8 font-serif tracking-tight">
-                    Não vendo m². <br/> 
-                    Vendo decisões <span class="text-gray-400 italic font-light">bem tomadas.</span>
-                </h1>
-                
-                <div class="text-lg text-gray-500 font-light mb-12 max-w-2xl leading-relaxed space-y-2">
-                    <p>Trabalho com dados, leitura real de mercado e decisões bem conduzidas.</p>
-                    <p>Não inflaciono expectativas nem forço decisões. Entrego imóveis com critério, clareza e valor real.</p>
-                </div>
-
-                <div class="bg-white/80 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-2xl p-2 flex flex-col md:flex-row gap-2 max-w-2xl ring-1 ring-gray-100">
-                    <div class="flex-1 flex items-center px-4 bg-gray-50/50 rounded-xl h-14 hover:bg-gray-50 transition-colors group focus-within:bg-white ring-1 ring-transparent focus-within:ring-black/5">
-                        <i data-lucide="search" class="text-gray-400 mr-3 w-5 h-5"></i>
-                        <input id="search-input" type="text" placeholder="Busque por ID, condomínio ou bairro..." class="w-full bg-transparent outline-none text-gray-800 placeholder-gray-400 font-medium">
-                    </div>
-                    <div class="md:w-48 flex items-center px-4 bg-gray-50/50 rounded-xl h-14 hover:bg-gray-50 transition-colors relative group focus-within:bg-white ring-1 ring-transparent focus-within:ring-black/5">
-                        <i data-lucide="map-pin" class="text-gray-400 mr-3 w-5 h-5"></i>
-                        <select id="neighborhood-filter" class="w-full bg-transparent outline-none text-gray-800 appearance-none cursor-pointer font-medium z-10 pr-4">
-                            <option value="todos">Localização</option>
-                            </select>
-                        <div class="absolute right-4 pointer-events-none text-gray-400 text-xs">▼</div>
-                    </div>
-                    <button onclick="scrollToGrid()" class="h-14 px-8 bg-black text-white rounded-xl font-medium hover:bg-gray-800 transition-all shadow-lg shadow-gray-200">
-                        Buscar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <section id="imoveis" class="py-20 px-6 bg-[#FAFAFA]">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                <div>
-                    <h2 class="text-2xl font-medium text-black mb-2">Coleção Exclusiva</h2>
-                    <p class="text-gray-500 font-light">Imóveis selecionados em Goiânia e região.</p>
-                </div>
-                
-                <div id="quick-filters" class="flex flex-wrap gap-2">
-                    </div>
-            </div>
-
-            <div id="loading-state" class="flex flex-col items-center justify-center py-32 text-gray-400">
-                <div class="loader mb-4"></div>
-                <p class="font-light animate-pulse">Carregando imóveis...</p>
-            </div>
-
-            <div id="error-state" class="hidden text-center py-24 bg-white rounded-[2rem] border border-red-100">
-                <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
-                    <i data-lucide="alert-circle"></i>
-                </div>
-                <h3 class="text-lg font-medium text-red-600">Atenção</h3>
-                <p id="error-message" class="text-gray-500 font-light mt-2 max-w-md mx-auto"></p>
-            </div>
-
-            <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 hidden">
-                </div>
-
-            <div id="empty-state" class="hidden text-center py-24 bg-white rounded-[2rem] border border-dashed border-gray-200">
-                <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
-                    <i data-lucide="search"></i>
-                </div>
-                <h3 class="text-lg font-medium text-black">Nenhum imóvel encontrado</h3>
-                <button onclick="resetFilters()" class="mt-6 px-6 py-2 text-sm font-bold bg-gray-100 hover:bg-black hover:text-white rounded-full transition-colors">
-                    Limpar Filtros
-                </button>
-            </div>
-
-            <div id="load-more-container" class="text-center pt-8 border-t border-gray-100 hidden">
-                <button id="load-more-btn" class="group inline-flex items-center gap-2 px-8 py-4 bg-white border border-gray-300 text-black font-bold rounded-full hover:bg-black hover:text-white hover:border-black transition-all shadow-sm">
-                    <i data-lucide="plus-circle" class="group-hover:rotate-90 transition-transform duration-300"></i>
-                    Carregar Mais Imóveis
-                </button>
-                <p id="showing-count" class="text-xs text-gray-400 mt-4"></p>
-            </div>
-        </div>
-    </section>
-
-    <section id="conceito" class="py-32 bg-black text-white relative overflow-hidden">
-        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-b from-gray-800 to-transparent rounded-full blur-[150px] opacity-40"></div>
         
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-20 items-center relative z-10">
-            <div>
-                <h2 class="text-4xl md:text-5xl font-serif mb-8 leading-tight">
-                    Preço justo não é estratégia. <br/> <span class="text-gray-500 italic">É princípio.</span>
-                </h2>
-                <div class="text-gray-400 text-lg font-light leading-relaxed mb-10 max-w-md space-y-4">
-                    <p>O mercado imobiliário é ruidoso. Meu trabalho é filtrar o ruído e entregar clareza.</p>
-                    <p>Não vendo ilusões de valorização impossível. Vendo a segurança de um ativo sólido, analisado com rigor técnico e transparência absoluta.</p>
-                    <p class="text-white font-medium border-l-2 border-white pl-4">"Um imóvel, para mim, é a identidade de quem o conquista."</p>
-                </div>
-                <a href="https://wa.me/5562982495522" target="_blank" class="inline-flex items-center gap-3 px-8 py-4 bg-white text-black rounded-full font-medium hover:bg-gray-200 transition-colors">
-                    Iniciar Consultoria <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </a>
-            </div>
+        <div class="hero-r">
+            <img src="https://i.ibb.co/PVSqD22/PHOTO-2026-02-23-17-23-38-Copia-Copia.png" class="hero-r-img" alt="Vinícius Kasbaum e Mércia Miranda">
             
-            <div class="relative">
-                <div class="aspect-[3/4] rounded-[2rem] overflow-hidden bg-gray-900 border border-white/10 relative group">
-                    <div class="absolute inset-0 bg-gray-800 flex items-center justify-center text-gray-600 font-serif text-4xl opacity-50">VK</div>
-                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800&sat=-100" alt="Vinicius Kasbaum" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 grayscale hover:grayscale-0">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-90"></div>
-                    
-                    <div class="absolute bottom-10 left-10">
-                        <p class="text-3xl font-serif text-white mb-2">Vinicius Kasbaum</p>
-                        <div class="flex flex-col gap-1">
-                            <p class="text-sm text-gray-400 uppercase tracking-widest font-bold">Corretor Especialista</p>
-                            <p class="text-xs text-gray-500 font-mono">CRECI 30.942 GO</p>
-                        </div>
+            <div class="contact-overlay">
+                <div class="contact-pill pill-left">
+                    <span class="pill-tag">CRECI 31.823</span>
+                    <h3 class="pill-name">Mércia Miranda</h3>
+                    <hr class="pill-divider">
+                    <div class="pill-actions">
+                        <a href="https://wa.me/5562999395092" target="_blank" class="social-link" title="WhatsApp">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9"></path><path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1"></path></svg>
+                        </a>
+                        <a href="tel:+5562999395092" class="social-link" title="Ligar"><i data-lucide="phone" size="18"></i></a>
+                        <a href="https://instagram.com/merciamiranda.imoveis" target="_blank" class="social-link" title="Instagram"><i data-lucide="instagram" size="18"></i></a>
+                    </div>
+                </div>
+
+                <div class="contact-pill pill-right">
+                    <span class="pill-tag">CRECI 32.942</span>
+                    <h3 class="pill-name">Vinícius Kasbaum</h3>
+                    <hr class="pill-divider">
+                    <div class="pill-actions">
+                        <a href="https://wa.me/5562982495522" target="_blank" class="social-link" title="WhatsApp">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9"></path><path d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1"></path></svg>
+                        </a>
+                        <a href="tel:+5562982495522" class="social-link" title="Ligar"><i data-lucide="phone" size="18"></i></a>
+                        <a href="https://instagram.com/viniciuskasbaum" target="_blank" class="social-link" title="Instagram"><i data-lucide="instagram" size="18"></i></a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer id="contato" class="bg-[#FAFAFA] border-t border-gray-200 py-20">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-12 mb-16">
-                <div class="text-center md:text-left">
-                    <h3 class="text-2xl font-bold tracking-tighter text-black mb-2">KASBAUM</h3>
-                    <p class="text-xs text-gray-400 uppercase tracking-widest">Goiânia, Goiás</p>
+    <div class="ticker-wrap"><div class="ticker-track" id="ticker"></div></div>
+
+    <div id="imoveis" class="portfolio-wrapper">
+        <section class="search-section" id="filter-bar">
+            <div class="filter-container">
+                <div class="filter-group"><label for="filter-search">Busca Livre</label><input type="text" id="filter-search" class="input-minimal" placeholder="Ex: Penthouse, Setor Bueno..."></div>
+                <div class="filter-group"><label for="filter-hood">Bairro</label><select id="filter-hood" class="input-minimal"></select></div>
+                <div class="filter-group">
+                    <label for="filter-beds">Quartos</label>
+                    <select id="filter-beds" class="input-minimal">
+                        <option value="">Qualquer</option>
+                        <option value="1">1+ Quarto</option>
+                        <option value="2">2+ Quartos</option>
+                        <option value="3">3+ Quartos</option>
+                    </select>
                 </div>
-                
-                <div class="flex gap-8">
-                    <a href="https://instagram.com/viniciuskasbaum" target="_blank" class="group flex flex-col items-center gap-2 text-gray-400 hover:text-black transition-colors">
-                        <div class="p-4 bg-white border border-gray-200 rounded-full group-hover:border-black transition-colors shadow-sm">
-                            <i data-lucide="instagram"></i>
-                        </div>
-                        <span class="text-xs font-bold uppercase">Instagram</span>
-                    </a>
-                    <a href="https://wa.me/5562982495522" target="_blank" class="group flex flex-col items-center gap-2 text-gray-400 hover:text-black transition-colors">
-                        <div class="p-4 bg-white border border-gray-200 rounded-full group-hover:border-black transition-colors shadow-sm">
-                            <i data-lucide="message-circle"></i>
-                        </div>
-                        <span class="text-xs font-bold uppercase">WhatsApp</span>
-                    </a>
-                    
-                    <button onclick="openContactModal()" class="group flex flex-col items-center gap-2 text-gray-400 hover:text-black transition-colors cursor-pointer">
-                        <div class="p-4 bg-white border border-gray-200 rounded-full group-hover:border-black transition-colors shadow-sm">
-                            <i data-lucide="mail"></i>
-                        </div>
-                        <span class="text-xs font-bold uppercase">Email</span>
-                    </button>
+                <div class="filter-group">
+                    <label for="filter-price">Faixa de Preço</label>
+                    <select id="filter-price" class="input-minimal">
+                        <option value="">Qualquer valor</option>
+                        <option value="0-1000000">Até R$ 1 Mi</option>
+                        <option value="1000000-3000000">R$ 1 Mi - 3 Mi</option>
+                        <option value="3000000-5000000">R$ 3 Mi - 5 Mi</option>
+                        <option value="5000000-9999999999">Acima de R$ 5 Mi</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-sort">Ordem</label>
+                    <select id="filter-sort" class="input-minimal">
+                        <option value="newest">Mais Recentes</option>
+                        <option value="price-asc">Menor Preço</option>
+                        <option value="price-desc">Maior Preço</option>
+                    </select>
+                </div>
+                <button class="btn-reset" id="btn-reset" title="Limpar Filtros"><i data-lucide="rotate-ccw" size="18"></i></button>
+            </div>
+        </section>
+
+        <section class="section-imoveis">
+            <div id="properties-grid"><div class="system-msg">Sincronizando portfólio...</div></div>
+            <div class="load-more-container view-hidden" id="load-more-container">
+                <button class="btn-load-more" id="btn-load-more" style="display:block; margin: 40px auto; padding: 15px 40px; border: 1px solid var(--ink); border-radius: 99px; background: transparent; cursor: pointer; font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;">Carregar mais imóveis</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- CONSULTORIA -->
+    <section class="services-section" id="consultoria">
+        <div class="services-grid">
+            <div class="service-column">
+                <span class="bio-tag">Para Proprietários</span>
+                <h3 class="section-h3">Deixe seu imóvel conosco.</h3>
+                <p class="body-p">Unimos estratégia, inteligência de mercado e execução comercial de alto desempenho para posicionar seu imóvel da forma correta. <strong>Seu imóvel não será apenas anunciado. Será estrategicamente trabalhado para gerar resultado.</strong></p>
+            </div>
+            <div class="service-column">
+                <span class="bio-tag">Para Compradores</span>
+                <h3 class="section-h3">Compre seu imóvel conosco.</h3>
+                <p class="body-p">Nossa atuação é baseada em dados, análise de mercado e avaliação criteriosa. <strong>Decisão imobiliária não deve ser emocional. Deve ser estratégica, segura e fundamentada.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BIOGRAFIAS (DESIGN EDITORIAL ATUALIZADO) -->
+    <section class="bios-section">
+        <h2 class="section-h2">Rigor técnico e <em>legado de excelência.</em></h2>
+        
+        <div class="bio-grid">
+            <div class="bio-column">
+                <span class="bio-tag">Inovação Estratégica</span>
+                <h3 class="bio-name">Mércia Miranda</h3>
+                <p class="body-p">Minha trajetória profissional foi construída integralmente no mercado imobiliário. Filha e neta de corretores, iniciei minha atuação aos 16 anos, participando ativamente dos negócios da família, o que me proporcionou uma base sólida e experiência prática desde cedo.<br><br>Ter iniciado minha carreira ainda jovem me permitiu desenvolver uma visão estratégica atual e inovadora do mercado, sem vícios tradicionais da profissão. Isso se reflete na forma como identifico oportunidades e incorporo tecnologia aos processos.</p>
+                <hr class="bio-divider">
+                <div class="bio-stats">
+                    <div class="stat-box"><span>CRECI</span><span>31.823</span></div>
+                    <div class="stat-box"><span>VGV Somado</span><span>+ R$ 50 Mi</span></div>
                 </div>
             </div>
-            
-            <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400 gap-4">
-                <p>© 2024 Kasbaum Negócios Imobiliários. Todos os direitos reservados.</p>
-                <div class="flex gap-6">
-                    <a href="#" class="hover:text-black transition-colors">Política de Privacidade</a>
-                    <a href="#" class="hover:text-black transition-colors">Termos de Uso</a>
+
+            <div class="bio-column">
+                <span class="bio-tag">Liderança Comercial</span>
+                <h3 class="bio-name">Vinícius Kasbaum</h3>
+                <p class="body-p">Com formação em Direito, foi conduzido ao mercado imobiliário há mais de 18 anos. Construiu carreira sólida ao longo de 14 anos em uma incorporadora de um renomado grupo europeu em Goiânia, onde gerenciou os departamentos comercial e de marketing, alcançando resultados que ultrapassaram a marca de R$ 1 bilhão em vendas.<br><br>Há mais de três anos, reinventou-se na linha de frente como corretor, consolidando-se como líder de vendas. Seu trabalho é pautado por dedicação, segurança jurídica e atenção rigorosa aos detalhes.</p>
+                <hr class="bio-divider">
+                <div class="bio-stats">
+                    <div class="stat-box"><span>CRECI</span><span>32.942</span></div>
+                    <div class="stat-box"><span>VGV Gerenciado</span><span>+ R$ 1 Bi</span></div>
                 </div>
             </div>
         </div>
-    </footer>
+    </section>
 
-    <div id="modal-overlay" class="fixed inset-0 z-[100] hidden items-center justify-center p-0 md:p-6 animate-fade-in bg-black/60 backdrop-blur-sm">
-        <div class="relative w-full h-full flex items-center justify-center pointer-events-none">
-             <div class="pointer-events-auto bg-white w-full max-w-7xl h-full md:h-[90vh] md:rounded-[2rem] overflow-hidden shadow-2xl relative flex flex-col md:flex-row z-10 animate-zoom-in">
-                <div id="modal-content" class="w-full h-full flex flex-col md:flex-row">
-                    <div class="w-full h-full flex items-center justify-center text-gray-400">
-                        <div class="loader mr-3"></div> Carregando detalhes...
+    <!-- CTA FINAL -->
+    <section class="final-cta-section">
+        <div class="final-cta-container">
+            <h2 class="final-cta-header">Pronto para o seu <em>próximo passo?</em></h2>
+            <div class="final-cta-grid">
+                <div class="cta-card">
+                    <span class="cta-creci">CRECI 31.823</span>
+                    <h3 class="cta-name">Mércia Miranda</h3>
+                    <p class="body-p" style="text-align: center; font-size: 0.9rem;">Especialista em Inteligência Imobiliária e Inovação.</p>
+                    <div class="cta-actions">
+                        <a href="https://wa.me/5562999395092" target="_blank" class="btn-solid">WhatsApp</a>
+                        <a href="tel:+5562999395092" class="btn-solid btn-outline">Ligar</a>
                     </div>
                 </div>
-             </div>
-             <button onclick="closeModal()" class="pointer-events-auto absolute top-4 right-4 md:top-10 md:right-10 z-[110] p-2 bg-white/90 backdrop-blur-md rounded-full text-black hover:bg-black hover:text-white transition-all shadow-lg border border-gray-100">
-                <i data-lucide="x"></i>
-             </button>
+                <div class="cta-card">
+                    <span class="cta-creci">CRECI 32.942</span>
+                    <h3 class="cta-name">Vinícius Kasbaum</h3>
+                    <p class="body-p" style="text-align: center; font-size: 0.9rem;">Especialista em Gestão Comercial e Jurídica.</p>
+                    <div class="cta-actions">
+                        <a href="https://wa.me/5562982495522" target="_blank" class="btn-solid">WhatsApp</a>
+                        <a href="tel:+5562982495522" class="btn-solid btn-outline">Ligar</a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div id="contact-modal" class="fixed inset-0 z-[200] hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl relative p-8 animate-zoom-in">
-            <button onclick="closeContactModal()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-black transition-colors">
-                <i data-lucide="x"></i>
-            </button>
-            
-            <h2 class="text-2xl font-serif font-bold text-black mb-2">Fale Conosco</h2>
-            <p class="text-gray-500 text-sm mb-6">Preencha os dados abaixo para enviar uma mensagem diretamente para Vinicius Kasbaum.</p>
-            
-            <form onsubmit="sendEmail(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Nome</label>
-                    <input type="text" id="contact-name" class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-black focus:ring-0 outline-none transition-all" placeholder="Seu nome">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">E-mail <span class="text-red-500">*</span></label>
-                    <input type="email" id="contact-email" required class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-black focus:ring-0 outline-none transition-all" placeholder="seu@email.com">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Telefone <span class="text-red-500">*</span></label>
-                    <input type="tel" id="contact-phone" required class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-black focus:ring-0 outline-none transition-all" placeholder="(00) 00000-0000">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Mensagem</label>
-                    <textarea id="contact-message" rows="3" class="w-full p-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-black focus:ring-0 outline-none transition-all" placeholder="Olá, gostaria de mais informações..."></textarea>
-                </div>
-                
-                <button type="submit" class="w-full py-4 bg-black text-white rounded-xl font-bold hover:bg-gray-800 transition-all flex items-center justify-center gap-2">
-                    <i data-lucide="send"></i> Enviar Mensagem
-                </button>
-            </form>
-        </div>
-    </div>
+    <!-- FINAL BRANDING -->
+    <section class="final-branding">
+        <img src="https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=80&w=1200" alt="Arquitectura de Alto Padrão" loading="lazy">
+    </section>
 
-    <script>
-        // --- CONFIGURAÇÃO E ESTADO ---
-        const DATA_URL = "https://script.google.com/macros/s/AKfycbz0-YxQeOec0L7fNVFSUGrRkV_box4SWHJ7mc1kbzaUi6OXpUe1gY2XOb6QQrfS6T_D/exec";
-        const ITEMS_PER_PAGE = 10;
+</main>
+
+<section id="detail-view" class="view-hidden"></section>
+
+<div id="lightbox" aria-modal="true" role="dialog">
+    <div class="lb-header">
+        <div class="lb-counter" id="lb-counter">01 / 01</div>
+        <button class="lb-close" id="lb-close-btn"><i data-lucide="x" size="32"></i></button>
+    </div>
+    <div class="lb-stage">
+        <button class="lb-nav" style="left:20px" id="lb-prev-btn"><i data-lucide="chevron-left" size="40"></i></button>
+        <div class="lb-img-container"><img src="" class="lb-img" id="lb-img"></div>
+        <button class="lb-nav" style="right:20px" id="lb-next-btn"><i data-lucide="chevron-right" size="40"></i></button>
+    </div>
+</div>
+
+<footer style="padding:100px 60px; background:var(--ink); color:var(--cream); text-align: center;">
+    <div style="font-family:var(--font-display); font-size:2rem; margin-bottom: 12px;">Kasbaum</div>
+    <div style="font-family:var(--font-mono); font-size:0.65rem; color:rgba(245,240,232,0.4);">© 2026 · Goiânia, Goiás · Rigor Técnico e Decisões Bem Tomadas</div>
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const escapeHTML = s => s ? String(s).replace(/[&<>'"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":"&#39;",'"':"&quot;"}[m])) : '';
+const formatBRL = v => v > 0 ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v) : 'Sob Consulta';
+
+const DATA_URL = "https://script.google.com/macros/s/AKfycbykswU7peMeg7yWfitmkMewrRkrCh3S0-SPiSjQNWSgszSkA6i8XS9Nu0lbYPNoRwFv/exec";
+let state = { all: [], filtered: [], isLoaded: false, activeProp: null, lbIdx: 0, visibleCount: 12, filters: { search: '', hood: '', beds: '', priceRange: '', sort: 'newest' } };
+
+const init = async () => {
+    if (window.lucide) lucide.createIcons();
+    $('ticker').innerHTML = `<div class="ticker-item">${'· RIGOR TÉCNICO · TRANSPARÊNCIA ABSOLUTA · DECISÕES BASEADAS EM DADOS · CONSULTORIA EXCLUSIVA '.repeat(10)}</div>`;
+    
+    try {
+        const res = await fetch(DATA_URL);
+        const data = await res.json();
         
-        let state = {
-            properties: [],
-            filtered: [],
-            visibleCount: ITEMS_PER_PAGE,
-            filterHood: 'todos',
-            searchTerm: '',
-            modalImageIdx: 0,
-            currentModalProp: null 
-        };
-
-        // --- DOM ELEMENTS ---
-        const els = {
-            grid: document.getElementById('properties-grid'),
-            loading: document.getElementById('loading-state'),
-            empty: document.getElementById('empty-state'),
-            error: document.getElementById('error-state'),
-            errorMessage: document.getElementById('error-message'),
-            loadMoreContainer: document.getElementById('load-more-container'),
-            loadMoreBtn: document.getElementById('load-more-btn'),
-            showingCount: document.getElementById('showing-count'),
-            searchInput: document.getElementById('search-input'),
-            hoodSelect: document.getElementById('neighborhood-filter'),
-            quickFilters: document.getElementById('quick-filters'),
-            modalOverlay: document.getElementById('modal-overlay'),
-            modalContent: document.getElementById('modal-content'),
-            contactModal: document.getElementById('contact-modal'),
-            navbar: document.getElementById('navbar'),
-            mobileMenuBtn: document.getElementById('mobile-menu-btn'),
-            closeMenuBtn: document.getElementById('close-menu-btn'),
-            mobileMenu: document.getElementById('mobile-menu')
-        };
-
-        // --- UTILITÁRIOS ---
-        const formatBRL = (val) => {
-            if (val === null || val === undefined) return "Sob Consulta";
-            return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val);
-        };
-
-        // --- MAPPER: JSON API (App Script) -> APP STRUCT ---
-        const mapProperty = (item) => {
+        if (!Array.isArray(data)) throw new Error("Formato de API Inválido");
+        
+        state.all = data.map(item => {
+            let photos = Array.isArray(item.fotos) ? item.fotos : (typeof item.fotos === 'string' ? item.fotos.split(',').map(p => p.trim()) : []);
+            photos = photos.filter(p => p.startsWith('http'));
+            if (!photos.length) photos = ["https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=1000"];
             return {
-                ListingID: item.id || '',
-                Title: item.titulo || 'Imóvel sem título',
-                TransactionType: item.operacao || null, 
-                Location: {
-                    City: item.cidade || 'Goiânia',
-                    Neighborhood: item.bairro || '',
-                    Address: item.endereco || ''
-                },
-                Details: {
-                    ListPrice: item.valor,
-                    CondoFee: 0, 
-                    Description: item.descricao || '',
-                    LivingArea: item.area,
-                    Bedrooms: Number(item.quartos) || 0,
-                    Suites: Number(item.suites) || 0,
-                    Bathrooms: Number(item.banheiros) || 0,
-                    Garage: Number(item.vagas) || 0,
-                    PropertyType: item.tipo || '',
-                    Features: item.features || []
-                },
-                Media: item.fotos ? item.fotos : (item.foto ? [item.foto] : []),
-                Url: item.url || ''
+                id: escapeHTML(String(item.id).trim()),
+                title: escapeHTML(item.titulo || "Imóvel Kasbaum"),
+                price: Number(item.valor) || 0,
+                hood: escapeHTML(item.bairro || "Goiânia"),
+                city: escapeHTML(item.cidade || "Goiás"),
+                area: escapeHTML(item.area || ""),
+                areaTotal: escapeHTML(item.area_total || item.areaTotal || item.areatotal || ""),
+                areaPrivativa: escapeHTML(item.area_privativa || item.areaPrivativa || item.areaprivativa || ""),
+                areaTerreno: escapeHTML(item.area_terreno || item.areaTerreno || item.areaterreno || ""),
+                beds: Number(item.quartos) || 0,
+                suites: escapeHTML(item.suites || ""),
+                garage: escapeHTML(item.vagas || item.garagem || ""),
+                mobiliado: escapeHTML(item.mobiliado || ""),
+                photos: photos.map(escapeHTML),
+                desc: escapeHTML(item.descricao || "Consultoria técnica exclusiva.")
             };
-        };
+        });
+        
+        const hoods = [...new Set(state.all.map(p => p.hood))].sort();
+        hoods.forEach(h => { if(h) { const opt = document.createElement('option'); opt.value = h; opt.textContent = h; $('filter-hood').appendChild(opt); } });
+        
+        state.filtered = [...state.all];
+        state.isLoaded = true;
+        
+        setupEventListeners();
+        applyFilters();
+        handleRouting();
+    } catch (err) {
+        console.error(err);
+        $('properties-grid').innerHTML = `<div class="system-msg">Falha na sincronização do portfólio. Recarregue a página.</div>`;
+    }
+};
 
-        // --- TRANSLATION MAP (PT-BR) - EXPANDED ---
-        const featureTranslations = {
-            // Correções Específicas
-            "cooling": "Climatização",
-            "builtin wardrobe": "Armários Embutidos",
-            "garden area": "Área de Jardim",
-            "barbecue balcony": "Varanda Gourmet",
-            "exterior view": "Vista Externa",
-            "large window": "Janelas Amplas",
-            "large kitchen": "Cozinha Ampla",
-            "dinner room": "Sala de Jantar",
-            "security guard on duty": "Segurança 24h",
-            "bicycles place": "Bicicletário",
-            "gourmet kitchen": "Cozinha Gourmet",
-            "beauty room": "Espaço de Beleza",
-            "beauty center": "Espaço de Beleza",
-            "kitchen cabinets": "Armários na Cozinha",
-            
-            // Lazer & Bem-Estar
-            "pool": "Piscina", "swimming pool": "Piscina", "private pool": "Piscina Privativa", "indoor pool": "Piscina Coberta", "heated pool": "Piscina Aquecida", "kids pool": "Piscina Infantil", "lap pool": "Raia de Piscina", "infinity pool": "Piscina com Borda Infinita",
-            "gym": "Academia", "fitness center": "Academia", "workout room": "Sala de Ginástica", "pilates studio": "Estúdio de Pilates", "yoga room": "Sala de Yoga", "crossfit": "Espaço Crossfit",
-            "sauna": "Sauna", "dry sauna": "Sauna Seca", "wet sauna": "Sauna Úmida", "steam room": "Sauna a Vapor", "spa": "Spa", "massage room": "Sala de Massagem", "jacuzzi": "Jacuzzi", "hot tub": "Banheira de Hidromassagem",
-            "playground": "Playground", "kids room": "Brinquedoteca", "toy library": "Brinquedoteca", "game room": "Salão de Jogos", "video game room": "Sala de Games",
-            "party room": "Salão de Festas", "ballroom": "Salão de Festas", "gourmet area": "Espaço Gourmet", "gourmet balcony": "Varanda Gourmet", "barbecue": "Churrasqueira", "bbq": "Churrasqueira", "pizza oven": "Forno de Pizza", "cinema": "Cinema", "home theater": "Home Theater",
-            "sports court": "Quadra Poliesportiva", "tennis court": "Quadra de Tênis", "soccer field": "Campo de Futebol", "squash court": "Quadra de Squash", "walking track": "Pista de Caminhada", "bike rack": "Bicicletário", "skate park": "Pista de Skate",
-            "garden": "Jardim", "green area": "Área Verde", "orchard": "Pomar", "vegetable garden": "Horta", "pet place": "Espaço Pet", "pet care": "Pet Care", "dog run": "Espaço para Cães", "park": "Parque", "lake": "Lago",
-            
-            // Infraestrutura & Segurança
-            "elevator": "Elevador", "lift": "Elevador", "service elevator": "Elevador de Serviço", "social elevator": "Elevador Social", "private elevator": "Elevador Privativo",
-            "garage": "Garagem", "parking": "Estacionamento", "guest parking": "Vagas para Visitantes", "covered parking": "Estacionamento Coberto", "underground parking": "Estacionamento Subterrâneo", "valet parking": "Manobrista", "electric car charging station": "Carregador Carro Elétrico", "car wash": "Lava-jato",
-            "security": "Segurança", "24h security": "Segurança 24h", "concierge": "Portaria", "doorman": "Porteiro", "gated community": "Condomínio Fechado", "access control": "Controle de Acesso", "cctv": "Circuito de Câmeras", "intercom": "Interfone", "alarm system": "Alarme", "electronic gate": "Portão Eletrônico", "fenced yard": "Quintal Cercado", "biometric access": "Acesso Biométrico",
-            "generator": "Gerador", "solar energy": "Energia Solar", "water tank": "Caixa d'Água", "cistern": "Cisterna", "artesian well": "Poço Artesiano", "sewage system": "Rede de Esgoto", "paved street": "Rua Asfaltada",
-            "accessibility": "Acessibilidade", "wheelchair access": "Acesso para Cadeirantes", "ramp": "Rampa", "elevator access": "Acesso por Elevador",
-            "helipad": "Heliponto", "dock": "Pier", "boat slip": "Vaga para Barco", "hangar": "Hangar",
-            "meeting room": "Sala de Reunião", "coworking": "Coworking", "office": "Escritório", "study": "Escritório", "library": "Biblioteca", "lobby": "Hall de Entrada", "reception": "Recepção", "conference room": "Sala de Conferência",
-            
-            // Características do Imóvel
-            "air conditioning": "Ar Condicionado", "heating": "Aquecimento", "fireplace": "Lareira", "ceiling fan": "Ventilador de Teto", "soundproofing": "Isolamento Acústico",
-            "balcony": "Varanda", "terrace": "Terraço", "deck": "Deck", "solarium": "Solarium", "backyard": "Quintal", "patio": "Pátio", "veranda": "Varanda",
-            "furnished": "Mobiliado", "semi-furnished": "Semi-mobiliado", "unfurnished": "Sem Mobília", "built-in wardrobes": "Armários Embutidos", "closet": "Closet", "walk-in closet": "Closet", "custom furniture": "Móveis Planejados",
-            "kitchen": "Cozinha", "american kitchen": "Cozinha Americana", "integrated kitchen": "Cozinha Integrada", "pantry": "Despensa", "laundry": "Lavanderia", "service area": "Área de Serviço", "maid's quarters": "Dependência de Empregada",
-            "living room": "Sala de Estar", "dining room": "Sala de Jantar", "tv room": "Sala de TV", "home office": "Escritório",
-            "suites": "Suítes", "master suite": "Suíte Master", "bedrooms": "Quartos", "bathrooms": "Banheiros", "lavatory": "Lavabo",
-            "porcelain floor": "Piso Porcelanato", "wood floor": "Piso de Madeira", "ceramic floor": "Piso Cerâmico", "laminate floor": "Piso Laminado", "carpet": "Carpete", "marble floor": "Piso de Mármore", "granite floor": "Piso de Granito",
-            "ocean view": "Vista para o Mar", "sea view": "Vista para o Mar", "mountain view": "Vista para Montanha", "city view": "Vista da Cidade", "lake view": "Vista para o Lago", "park view": "Vista para o Parque", "panoramic view": "Vista Panorâmica", "beach front": "Frente para o Mar", "waterfront": "Beira-mar/Rio",
-            "corner lot": "Lote de Esquina", "high floor": "Andar Alto", "low floor": "Andar Baixo", "penthouse": "Cobertura", "duplex": "Duplex", "triplex": "Triplex", "loft": "Loft", "studio": "Studio",
-            "smart home": "Automação Residencial", "internet": "Internet", "cable tv": "TV a Cabo", "gas pipeline": "Gás Encanado", "solar heating": "Aquecimento Solar",
-            "near school": "Perto de Escolas", "near hospital": "Perto de Hospital", "near shopping": "Perto de Shopping", "near park": "Perto de Parque", "near public transport": "Perto de Transporte Público"
-        };
+const setupEventListeners = () => {
+    $('logo-btn').addEventListener('click', e => { e.preventDefault(); window.location.hash=''; window.scrollTo({top:0, behavior:'smooth'}); });
+    $('nav-imoveis-btn').addEventListener('click', e => { e.preventDefault(); const t=$('imoveis'); window.scrollTo({top:t.offsetTop-80, behavior:'smooth'}); });
+    $('hero-explore-btn').addEventListener('click', e => { e.preventDefault(); const t=$('imoveis'); window.scrollTo({top:t.offsetTop-80, behavior:'smooth'}); });
+    $('nav-consultoria-btn').addEventListener('click', e => { e.preventDefault(); const t=$('consultoria'); window.scrollTo({top:t.offsetTop-80, behavior:'smooth'}); });
+    window.addEventListener('scroll', () => $('nav').classList.toggle('scrolled', window.scrollY > 80));
+    
+    $('filter-search').addEventListener('input', e => { state.filters.search = e.target.value; applyFilters(); });
+    $('filter-hood').addEventListener('change', e => { state.filters.hood = e.target.value; applyFilters(); });
+    $('filter-beds').addEventListener('change', e => { state.filters.beds = e.target.value; applyFilters(); });
+    $('filter-price').addEventListener('change', e => { state.filters.priceRange = e.target.value; applyFilters(); });
+    $('filter-sort').addEventListener('change', e => { state.filters.sort = e.target.value; applyFilters(); });
+    $('btn-reset').addEventListener('click', () => { state.filters = { search:'', hood:'', beds:'', priceRange:'', sort:'newest' }; $('filter-search').value=''; $('filter-hood').value=''; $('filter-beds').value=''; $('filter-price').value=''; applyFilters(); });
+    $('btn-load-more').addEventListener('click', () => { state.visibleCount += 12; renderGrid(); });
+    
+    window.addEventListener('hashchange', handleRouting);
+    
+    $('lb-close-btn').addEventListener('click', closeLightbox);
+    $('lb-prev-btn').addEventListener('click', () => changeSlide(-1));
+    $('lb-next-btn').addEventListener('click', () => changeSlide(1));
+};
 
-        const translateFeature = (term) => {
-            if (!term) return "";
-            const cleanTerm = term.trim().toLowerCase(); 
-            if (featureTranslations[cleanTerm]) return featureTranslations[cleanTerm];
-            const key = Object.keys(featureTranslations).find(k => k.toLowerCase() === cleanTerm.toLowerCase());
-            return key ? featureTranslations[key] : cleanTerm;
-        };
+const applyFilters = () => {
+    let res = [...state.all];
+    if (state.filters.search) res = res.filter(p => p.title.toLowerCase().includes(state.filters.search.toLowerCase()));
+    if (state.filters.hood) res = res.filter(p => p.hood === state.filters.hood);
+    if (state.filters.beds) res = res.filter(p => p.beds >= Number(state.filters.beds));
+    if (state.filters.priceRange) { const [min, max] = state.filters.priceRange.split('-').map(Number); res = res.filter(p => p.price >= min && p.price <= max); }
+    if (state.filters.sort === 'price-asc') res.sort((a,b) => a.price - b.price); else if (state.filters.sort === 'price-desc') res.sort((a,b) => b.price - a.price); else res.reverse();
+    state.filtered = res;
+    state.visibleCount = 12;
+    renderGrid();
+};
 
-        // --- LÓGICA PRINCIPAL ---
+const renderGrid = () => {
+    const grid = $('properties-grid');
+    if (!state.filtered.length) { grid.innerHTML = `<div class="system-msg">Nenhum imóvel encontrado.</div>`; return; }
+    grid.innerHTML = state.filtered.slice(0, state.visibleCount).map(p => `
+        <a href="#id=${encodeURIComponent(p.id)}" class="card view-fade">
+            <img src="${p.photos[0]}" class="card-img" loading="lazy">
+            <div class="card-content">
+                <div class="card-hood">${p.hood}</div>
+                <h3 class="card-title">${p.title}</h3>
+                <div class="card-price">${formatBRL(p.price)}</div>
+            </div>
+        </a>
+    `).join('');
+    $('load-more-container').classList.toggle('view-hidden', state.visibleCount >= state.filtered.length);
+    if (window.lucide) lucide.createIcons();
+};
 
-        async function init() {
-            // Listeners
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 30) {
-                    els.navbar.classList.add('bg-white/80', 'backdrop-blur-xl', 'py-4', 'shadow-sm');
-                    els.navbar.classList.remove('py-6', 'border-transparent');
-                } else {
-                    els.navbar.classList.remove('bg-white/80', 'backdrop-blur-xl', 'py-4', 'shadow-sm');
-                    els.navbar.classList.add('py-6', 'border-transparent');
-                }
-            });
-
-            els.searchInput.addEventListener('input', (e) => { state.searchTerm = e.target.value; applyFilters(); });
-            els.hoodSelect.addEventListener('change', (e) => { state.filterHood = e.target.value; applyFilters(); });
-            els.loadMoreBtn.addEventListener('click', () => { state.visibleCount += ITEMS_PER_PAGE; renderGrid(); });
-            
-            // Mobile Menu
-            els.mobileMenuBtn.addEventListener('click', () => els.mobileMenu.classList.remove('translate-x-full'));
-            els.closeMenuBtn.addEventListener('click', () => els.mobileMenu.classList.add('translate-x-full'));
-            document.querySelectorAll('.mobile-link').forEach(l => l.addEventListener('click', () => els.mobileMenu.classList.add('translate-x-full')));
-
-            // --- CARREGAMENTO INICIAL (JSON) ---
-            try {
-                const res = await fetch(DATA_URL);
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                
-                const jsonData = await res.json();
-                
-                // Mapeia os dados do resumo
-                const data = jsonData.map(mapProperty);
-
-                if (data.length > 0) {
-                    state.properties = data;
-                    populateHoods();
-                    applyFilters();
-                } else {
-                    showError("Nenhum imóvel encontrado.");
-                }
-            } catch (e) {
-                showError("Erro de conexão. Verifique sua internet ou a URL da API.");
-                console.error(e);
-            } finally {
-                els.loading.classList.add('hidden');
-            }
-        }
-
-        function populateHoods() {
-            const hoods = [...new Set(state.properties.map(p => p.Location.Neighborhood).filter(Boolean))].sort();
-            hoods.forEach(h => {
-                const opt = document.createElement('option');
-                opt.value = h;
-                opt.textContent = h;
-                els.hoodSelect.appendChild(opt);
-            });
-
-            let html = `<button onclick="setQuickFilter('todos')" class="filter-btn px-4 py-2 rounded-full text-xs font-bold border transition-all bg-black text-white border-black" data-val="todos">Todos</button>`;
-            hoods.slice(0, 3).forEach(h => {
-                html += `<button onclick="setQuickFilter('${h}')" class="filter-btn px-4 py-2 rounded-full text-xs font-bold border transition-all bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black" data-val="${h}">${h}</button>`;
-            });
-            if(hoods.length > 3) {
-                html += `<div class="px-4 py-2 rounded-full text-xs font-bold border bg-white text-gray-400 border-gray-100 flex items-center gap-1 cursor-default"><i data-lucide="filter" class="w-3 h-3"></i> +${hoods.length - 3} bairros</div>`;
-            }
-            els.quickFilters.innerHTML = html;
-            lucide.createIcons();
-        }
-
-        window.setQuickFilter = (val) => {
-            state.filterHood = val;
-            els.hoodSelect.value = val;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.className = (btn.dataset.val === val) 
-                    ? "filter-btn px-4 py-2 rounded-full text-xs font-bold border transition-all bg-black text-white border-black" 
-                    : "filter-btn px-4 py-2 rounded-full text-xs font-bold border transition-all bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black";
-            });
-            applyFilters();
-        };
-
-        function applyFilters() {
-            const term = state.searchTerm.toLowerCase();
-            const hoodFilter = state.filterHood;
-
-            state.filtered = state.properties.filter(p => {
-                const title = (p.Title || '').toLowerCase();
-                const id = (p.ListingID || '').toLowerCase();
-                const hood = (p.Location.Neighborhood || '').toLowerCase();
-                const type = (p.Details.PropertyType || '').toLowerCase();
-
-                const matchText = id.includes(term) || title.includes(term) || hood.includes(term) || type.includes(term);
-                const matchHood = hoodFilter === 'todos' || hood === hoodFilter.toLowerCase();
-
-                return matchText && matchHood;
-            });
-            renderGrid();
-        }
-
-        function renderGrid() {
-            els.grid.innerHTML = '';
-            
-            if (state.filtered.length === 0) {
-                els.grid.classList.add('hidden');
-                els.empty.classList.remove('hidden');
-                els.loadMoreContainer.classList.add('hidden');
+/* ─── GLOBAL ROUTING & VIEW CONTROLLERS ─── */
+const handleRouting = () => {
+    const hash = window.location.hash;
+    if (hash.startsWith('#id=')) {
+        const idParam = decodeURIComponent(hash.replace('#id=', ''));
+        
+        if (state.isLoaded) {
+            const p = state.all.find(x => String(x.id).trim() === idParam.trim());
+            if (p) {
+                state.activeProp = p;
+                $('list-view').classList.add('view-hidden');
+                $('detail-view').classList.remove('view-hidden');
+                window.scrollTo(0,0);
+                renderDetailContent(p);
                 return;
-            }
-
-            els.empty.classList.add('hidden');
-            els.grid.classList.remove('hidden');
-
-            const toShow = state.filtered.slice(0, state.visibleCount);
-
-            toShow.forEach(p => {
-                const img = (p.Media && p.Media.length > 0) ? p.Media[0] : '';
-                const fallbackImg = `<div class="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs uppercase tracking-widest">Sem Imagem</div>`;
-                
-                // CONDITIONAL RENDER: Only show if > 0
-                const bedsHtml = p.Details.Bedrooms > 0 
-                    ? `<span class="flex items-center gap-1" title="Quartos"><i data-lucide="bed" class="w-3.5 h-3.5 text-black"></i> ${p.Details.Bedrooms}</span>` 
-                    : '';
-
-                const garageHtml = p.Details.Garage > 0 
-                    ? `<span class="flex items-center gap-1" title="Vagas"><i data-lucide="car" class="w-3.5 h-3.5 text-black"></i> ${p.Details.Garage}</span>` 
-                    : '';
-
-                const areaHtml = p.Details.LivingArea 
-                    ? `<span class="flex items-center gap-1 ml-auto text-black font-bold normal-case text-sm"><i data-lucide="maximize" class="w-3.5 h-3.5 text-black"></i> ${p.Details.LivingArea} m²</span>` 
-                    : '';
-
-                // Badge de Transação (Venda/Aluguel) - Só mostra se existir
-                const badgeHtml = p.TransactionType 
-                    ? `<div class="absolute top-4 left-4 z-20 flex gap-2"><span class="px-3 py-1.5 bg-white/95 backdrop-blur-md text-black text-[10px] font-bold uppercase tracking-wider rounded-lg shadow-sm border border-gray-100">${p.TransactionType}</span></div>` 
-                    : '';
-
-                const card = document.createElement('div');
-                card.className = "group bg-white rounded-[1.5rem] border border-gray-100 overflow-hidden cursor-pointer hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 hover:-translate-y-2 relative flex flex-col";
-                card.onclick = () => openModal(p.ListingID);
-
-                card.innerHTML = `
-                    <div class="h-[280px] overflow-hidden relative bg-gray-100">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
-                        ${img ? `<img src="${img}" alt="${p.Title}" loading="lazy" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out" onerror="this.style.display='none';this.parentNode.innerHTML='<div class=\\'w-full h-full bg-gray-200 flex items-center justify-center text-gray-400\\'>FOTO INDISPONÍVEL</div>'">` : fallbackImg}
-                        ${badgeHtml}
-                        <div class="absolute bottom-4 right-4 z-20">
-                            <span class="px-3 py-1.5 bg-black/80 backdrop-blur-md text-white text-[10px] font-bold tracking-widest rounded-lg shadow-sm flex items-center gap-1">
-                                <i data-lucide="hash" class="w-3 h-3"></i> ${p.ListingID}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="p-8 relative bg-white flex flex-col flex-grow">
-                        <div class="absolute -top-6 right-8 w-12 h-12 bg-black text-white rounded-full flex items-center justify-center shadow-lg shadow-black/20 transform scale-0 group-hover:scale-100 transition-transform duration-300 z-30">
-                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
-                        </div>
-                        <h3 class="text-xl font-medium text-black mb-1 font-serif truncate">${p.Title}</h3>
-                        <p class="text-sm text-gray-500 mb-6 font-light truncate">${p.Location.Neighborhood || ''} • ${p.Location.City || ''}</p>
-                        
-                        <div class="flex items-center gap-4 text-gray-400 text-xs font-medium uppercase tracking-wide border-t border-gray-100 pt-6 mt-auto">
-                            ${bedsHtml}
-                            ${garageHtml}
-                            ${areaHtml}
-                        </div>
-
-                        <div class="mt-6 pt-2">
-                            <p class="text-2xl font-light text-black tracking-tight">${formatBRL(p.Details.ListPrice)}</p>
-                        </div>
-                    </div>
-                `;
-                els.grid.appendChild(card);
-            });
-
-            if (state.visibleCount < state.filtered.length) {
-                els.loadMoreContainer.classList.remove('hidden');
-                els.showingCount.innerText = `Mostrando ${state.visibleCount} de ${state.filtered.length} imóveis`;
             } else {
-                els.loadMoreContainer.classList.add('hidden');
+                window.location.hash = ''; 
             }
-            lucide.createIcons();
         }
+    }
+    
+    $('detail-view').classList.add('view-hidden');
+    $('list-view').classList.remove('view-hidden');
+    state.activeProp = null;
+};
 
-        function showError(msg) {
-            els.loading.classList.add('hidden');
-            els.grid.classList.add('hidden');
-            els.error.classList.remove('hidden');
-            els.errorMessage.innerText = msg;
-        }
-
-        window.scrollToGrid = () => document.getElementById('imoveis').scrollIntoView({behavior: 'smooth'});
-        window.resetFilters = () => {
-            state.searchTerm = ''; state.filterHood = 'todos'; els.searchInput.value = ''; els.hoodSelect.value = 'todos'; window.setQuickFilter('todos');
-        };
-
-        // --- MODAL: FETCH LAZY ---
-        window.openModal = async (id) => {
-            els.modalOverlay.classList.remove('hidden');
-            els.modalOverlay.classList.add('flex');
-            document.body.style.overflow = 'hidden'; 
-            
-            els.modalContent.innerHTML = `<div class="w-full h-full flex items-center justify-center text-gray-400"><div class="loader mr-3"></div> Carregando detalhes...</div>`;
-
-            try {
-                // Chama API para pegar detalhes completos
-                const res = await fetch(`${DATA_URL}?id=${id}`);
-                if (!res.ok) throw new Error('Falha ao carregar detalhes');
-                const jsonDetail = await res.json();
-                
-                // Mapeia o objeto completo
-                state.currentModalProp = mapProperty(jsonDetail);
-                state.modalImageIdx = 0;
-                renderModalContent(); 
-            } catch (e) {
-                console.error(e);
-                els.modalContent.innerHTML = `<div class="w-full h-full flex flex-col items-center justify-center text-red-500"><i data-lucide="alert-circle" class="w-8 h-8 mb-2"></i><p>Erro ao carregar detalhes.</p><button onclick="closeModal()" class="mt-4 px-4 py-2 text-sm border rounded hover:bg-gray-50">Fechar</button></div>`;
-                lucide.createIcons();
-            }
-        };
-
-        window.closeModal = () => {
-            els.modalOverlay.classList.add('hidden');
-            els.modalOverlay.classList.remove('flex');
-            document.body.style.overflow = 'unset';
-            state.currentModalProp = null;
-        };
-
-        els.modalOverlay.addEventListener('click', (e) => {
-            if (e.target === els.modalOverlay || e.target.classList.contains('pointer-events-none')) closeModal();
-        });
-
-        function renderModalContent() {
-            const p = state.currentModalProp;
-            const idx = state.modalImageIdx;
-            const media = p.Media || [];
-            const hasMedia = media.length > 0;
-            const currentImg = hasMedia ? media[idx] : '';
-
-            // Renderização de Características (Features)
-            let featuresHtml = '';
-            if (p.Details.Features && p.Details.Features.length > 0) {
-                featuresHtml = `<div class="mb-8"><h3 class="text-sm font-bold uppercase tracking-widest text-black mb-3">Diferenciais</h3><div class="flex flex-wrap gap-2">`;
-                p.Details.Features.forEach(f => {
-                    featuresHtml += `<span class="px-3 py-1 bg-gray-50 border border-gray-100 rounded-full text-xs text-gray-600 flex items-center gap-1"><i data-lucide="check-circle-2" class="w-3 h-3 text-emerald-500"></i> ${translateFeature(f)}</span>`;
-                });
-                featuresHtml += `</div></div>`;
-            }
-
-            // GRID ITEMS CONDITIONALS (MODAL)
-            const gridItems = [];
-            
-            // Área Privativa (Usando "Área Privativa" como label)
-            if (p.Details.LivingArea) {
-                gridItems.push(`<div class="flex items-center gap-3"><div class="p-2.5 bg-gray-50 rounded-xl text-black"><i data-lucide="maximize" class="w-4 h-4"></i></div><div><p class="text-sm font-bold text-black">${p.Details.LivingArea} m²</p><p class="text-[10px] text-gray-400 uppercase">Área Privativa</p></div></div>`);
-            }
-            if (p.Details.Bedrooms > 0) {
-                gridItems.push(`<div class="flex items-center gap-3"><div class="p-2.5 bg-gray-50 rounded-xl text-black"><i data-lucide="bed" class="w-4 h-4"></i></div><div><p class="text-sm font-bold text-black">${p.Details.Bedrooms}</p><p class="text-[10px] text-gray-400 uppercase">Quartos</p></div></div>`);
-            }
-            if (p.Details.Suites > 0) {
-                gridItems.push(`<div class="flex items-center gap-3"><div class="p-2.5 bg-gray-50 rounded-xl text-black"><i data-lucide="crown" class="w-4 h-4"></i></div><div><p class="text-sm font-bold text-black">${p.Details.Suites}</p><p class="text-[10px] text-gray-400 uppercase">Suítes</p></div></div>`);
-            }
-            if (p.Details.Garage > 0) {
-                gridItems.push(`<div class="flex items-center gap-3"><div class="p-2.5 bg-gray-50 rounded-xl text-black"><i data-lucide="car" class="w-4 h-4"></i></div><div><p class="text-sm font-bold text-black">${p.Details.Garage}</p><p class="text-[10px] text-gray-400 uppercase">Vagas</p></div></div>`);
-            }
-            if (p.Details.Bathrooms > 0) {
-                gridItems.push(`<div class="flex items-center gap-3"><div class="p-2.5 bg-gray-50 rounded-xl text-black"><i data-lucide="bath" class="w-4 h-4"></i></div><div><p class="text-sm font-bold text-black">${p.Details.Bathrooms}</p><p class="text-[10px] text-gray-400 uppercase">Banheiros</p></div></div>`);
-            }
-
-            els.modalContent.innerHTML = `
-                <div class="w-full md:w-[65%] h-[40vh] md:h-full relative bg-zinc-900 group select-none flex items-center justify-center">
-                    ${hasMedia ? `<img src="${currentImg}" class="w-full h-full object-contain md:object-cover transition-opacity duration-300">` : `<div class="text-gray-500 flex flex-col items-center"><i data-lucide="image-off" class="w-8 h-8 mb-2"></i><span>SEM FOTO</span></div>`}
-                    ${hasMedia && media.length > 1 ? `
-                        <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-start pl-4"><button onclick="prevImage()" class="p-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-white hover:bg-white hover:text-black transition-all"><i data-lucide="chevron-left"></i></button></div>
-                        <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end pr-4"><button onclick="nextImage()" class="p-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-full text-white hover:bg-white hover:text-black transition-all"><i data-lucide="chevron-right"></i></button></div>
-                        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20 overflow-x-auto max-w-[80%] px-2 scrollbar-hide">${media.map((_, i) => `<button onclick="setImage(${i})" class="h-1.5 rounded-full transition-all duration-300 flex-shrink-0 ${i === idx ? 'w-8 bg-white shadow-lg' : 'w-2 bg-white/40 hover:bg-white/60'}"></button>`).join('')}</div>
-                    ` : ''}
-                </div>
-                <div class="w-full md:w-[35%] p-6 md:p-10 overflow-y-auto bg-white flex flex-col h-full">
-                    <div class="flex items-center gap-2 mb-6">
-                        ${p.TransactionType ? `<span class="px-3 py-1 bg-black text-white text-[10px] font-bold uppercase tracking-widest rounded-full">${p.TransactionType}</span>` : ''}
-                        <span class="px-3 py-1 bg-gray-50 text-gray-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-gray-200">ID: ${p.ListingID}</span>
-                        ${p.Details.PropertyType ? `<span class="px-3 py-1 bg-gray-50 text-gray-500 text-[10px] font-bold uppercase tracking-widest rounded-full border border-gray-200 ml-auto">${p.Details.PropertyType}</span>` : ''}
-                    </div>
-                    <h2 class="text-2xl md:text-3xl font-light text-black mb-2 leading-tight font-serif">${p.Title}</h2>
-                    <div class="flex flex-col text-gray-500 mb-6 font-light text-sm gap-1">
-                        <span class="flex items-center"><i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-black"></i> ${p.Location.Neighborhood || ''}, ${p.Location.City || ''}</span>
-                        ${p.Location.Address ? `<span class="text-xs pl-5 text-gray-400">${p.Location.Address}</span>` : ''}
-                    </div>
-                    <div class="text-3xl md:text-4xl font-medium text-black mb-2 tracking-tight">${formatBRL(p.Details.ListPrice)}</div>
+const renderDetailContent = (p) => {
+    $('detail-view').innerHTML = `
+        <div class="detail-page view-fade">
+            <button class="back-btn" id="detail-back-btn"><i data-lucide="arrow-left" style="width:14px"></i> Voltar ao Portfólio</button>
+            <article class="detail-main-grid">
+                <div class="detail-header-col">
+                    <span class="k-tag">CÓD. ${p.id} &nbsp;|&nbsp; ${p.hood} · ${p.city}</span>
+                    <h1 class="k-title">${p.title}</h1>
+                    <div class="k-price">${formatBRL(p.price)}</div>
                     
-                    <div class="grid grid-cols-2 gap-y-6 gap-x-4 mb-8 border-t border-b border-gray-100 py-8">
-                        ${gridItems.join('')}
-                    </div>
-                    ${featuresHtml}
-                    <div class="prose prose-sm prose-gray mb-10 max-w-none">
-                        <h3 class="text-sm font-bold uppercase tracking-widest text-black mb-3">Sobre o Imóvel</h3>
-                        <p class="text-gray-600 leading-relaxed font-light whitespace-pre-line text-justify">${p.Details.Description || ''}</p>
-                    </div>
-                    <div class="mt-auto space-y-3 pt-6 md:pt-0 sticky bottom-0 bg-white/95 backdrop-blur md:static pb-4 md:pb-0 border-t md:border-t-0 border-gray-100">
-                        <a href="https://wa.me/5562982495522?text=Olá Vinicius, tenho interesse no imóvel ID: ${p.ListingID} - ${p.Title}" target="_blank" class="w-full py-4 bg-black text-white rounded-xl font-medium flex items-center justify-center gap-2 hover:shadow-[0_10px_20px_-10px_rgba(0,0,0,0.4)] hover:-translate-y-1 transition-all duration-300"><i data-lucide="message-circle" class="w-4 h-4"></i> Agendar Visita</a>
-                        <button onclick="shareProp('${p.ListingID}')" class="w-full py-4 bg-white border border-gray-200 text-gray-900 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-gray-50 transition-all active:scale-95"><i data-lucide="share-2" class="w-4 h-4"></i> Compartilhar Imóvel</button>
+                    <div class="specs-grid">
+                        ${(p.areaTotal && p.areaTotal !== "0" && p.areaTotal.trim() !== "") ? `<div class="spec-box"><span>Área Terreno</span><span>${p.areaTotal}m²</span></div>` : ''}
+                        ${(p.areaTerreno && p.areaTerreno !== "0" && !p.areaTotal && p.areaTerreno.trim() !== "") ? `<div class="spec-box"><span>Área Terreno</span><span>${p.areaTerreno}m²</span></div>` : ''}
+                        ${(p.areaPrivativa && p.areaPrivativa !== "0" && p.areaPrivativa.trim() !== "") ? `<div class="spec-box"><span>Área Privativa</span><span>${p.areaPrivativa}m²</span></div>` : ''}
+                        ${(p.area && p.area !== "0" && !p.areaPrivativa && p.area.trim() !== "") ? `<div class="spec-box"><span>Área</span><span>${p.area}m²</span></div>` : ''}
+                        ${p.beds ? `<div class="spec-box"><span>Quartos</span><span>${p.beds}</span></div>` : ''}
+                        ${(p.suites && p.suites !== "0" && p.suites.trim() !== "") ? `<div class="spec-box"><span>Suítes</span><span>${p.suites}</span></div>` : ''}
+                        ${(p.garage && p.garage !== "0" && p.garage.trim() !== "") ? `<div class="spec-box"><span>Vagas</span><span>${p.garage}</span></div>` : ''}
+                        ${(p.mobiliado && p.mobiliado.toLowerCase() !== "não" && p.mobiliado.trim() !== "") ? `<div class="spec-box"><span>Mobiliado</span><span>Sim</span></div>` : ''}
                     </div>
                 </div>
-            `;
-            lucide.createIcons();
-        }
-
-        window.prevImage = () => { const len = state.currentModalProp.Media.length; state.modalImageIdx = (state.modalImageIdx - 1 + len) % len; renderModalContent(); };
-        window.nextImage = () => { const len = state.currentModalProp.Media.length; state.modalImageIdx = (state.modalImageIdx + 1) % len; renderModalContent(); };
-        window.setImage = (i) => { state.modalImageIdx = i; renderModalContent(); };
-        window.shareProp = (id) => { const link = window.location.href.split('#')[0] + '#' + id; navigator.clipboard.writeText(link).then(() => alert('Link copiado!')).catch(() => prompt("Copie o link:", link)); };
-
-        // --- CONTACT MODAL LOGIC ---
-        window.openContactModal = () => {
-            els.contactModal.classList.remove('hidden');
-            els.contactModal.classList.add('flex');
-            document.body.style.overflow = 'hidden';
-        };
-
-        window.closeContactModal = () => {
-            els.contactModal.classList.add('hidden');
-            els.contactModal.classList.remove('flex');
-            document.body.style.overflow = 'unset';
-        };
-
-        window.sendEmail = (e) => {
-            e.preventDefault();
-            const name = document.getElementById('contact-name').value;
-            const email = document.getElementById('contact-email').value;
-            const phone = document.getElementById('contact-phone').value;
-            const message = document.getElementById('contact-message').value;
+                <div class="detail-main-img-trigger" id="detail-main-img"><img src="${p.photos[0]}" style="width:100%; border-radius:4px;"></div>
+                <div class="detail-desc-col">
+                    <p class="k-desc">${p.desc}</p>
+                    <div class="action-buttons">
+                        <a href="https://wa.me/5562982495522?text=Interesse no imóvel Cód. ${p.id}: ${encodeURIComponent(p.title)}" target="_blank" class="btn-solid">Falar com Vinícius <i data-lucide="message-circle"></i></a>
+                        <a href="https://wa.me/5562999395092?text=Interesse no imóvel Cód. ${p.id}: ${encodeURIComponent(p.title)}" target="_blank" class="btn-solid">Falar com Mércia <i data-lucide="message-circle"></i></a>
+                        <button id="btn-print-doc" class="btn-solid btn-outline">Imprimir PDF <i data-lucide="printer"></i></button>
+                    </div>
+                </div>
+            </article>
             
-            const subject = encodeURIComponent(`Contato via Site - ${name}`);
-            const body = encodeURIComponent(
-                `Nome: ${name}\n` +
-                `E-mail: ${email}\n` +
-                `Telefone: ${phone}\n\n` +
-                `Mensagem:\n${message}`
-            );
+            <div class="detail-gallery">
+                ${p.photos.map((img, i) => `<div class="gallery-img-container" data-index="${i}"><img src="${img}"></div>`).join('')}
+            </div>
             
-            window.location.href = `mailto:viniciuskasbaum@gmail.com?subject=${subject}&body=${body}`;
-            closeContactModal();
-        };
+            <div class="print-footer">Kasbaum Negócios Imobiliários</div>
+        </div>
+    `;
+    
+    if (window.lucide) lucide.createIcons();
 
-        // Close contact modal on outside click
-        els.contactModal.addEventListener('click', (e) => {
-             if (e.target === els.contactModal) closeContactModal();
-        });
+    $('detail-back-btn').addEventListener('click', (e) => { e.preventDefault(); window.location.hash = ''; });
+    $('detail-main-img').addEventListener('click', () => openLightbox(0));
+    $('btn-print-doc').addEventListener('click', () => window.print());
+    
+    document.querySelectorAll('.gallery-img-container').forEach(el => {
+        el.addEventListener('click', () => openLightbox(parseInt(el.getAttribute('data-index'))));
+    });
+};
 
-        // --- INIT ---
-        init();
+const openLightbox = i => { 
+    if (!state.activeProp || !state.activeProp.photos) return;
+    state.lbIdx = i; 
+    $('lightbox').classList.add('active'); 
+    updateLB(); 
+    document.body.style.overflow = 'hidden'; 
+};
 
-    </script>
+const closeLightbox = () => { 
+    $('lightbox').classList.remove('active'); 
+    document.body.style.overflow = ''; 
+};
+
+const changeSlide = d => { 
+    if (!state.activeProp || !state.activeProp.photos || state.activeProp.photos.length === 0) return;
+    const t = state.activeProp.photos.length; 
+    state.lbIdx = (state.lbIdx + d + t) % t; 
+    updateLB(); 
+};
+
+const updateLB = () => { 
+    if (!state.activeProp || !state.activeProp.photos) return;
+    const imgEl = $('lb-img');
+    if (!imgEl) return;
+    
+    imgEl.style.opacity = 0; 
+    setTimeout(() => { 
+        if (!state.activeProp || !state.activeProp.photos[state.lbIdx]) return;
+        imgEl.src = state.activeProp.photos[state.lbIdx]; 
+        $('lb-counter').innerText = `${(state.lbIdx+1).toString().padStart(2,'0')} / ${state.activeProp.photos.length.toString().padStart(2,'0')}`; 
+        imgEl.onload = () => imgEl.style.opacity = 1; 
+    }, 50); 
+};
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
