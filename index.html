@@ -214,6 +214,18 @@
             nav, .section-imoveis, .bios-section, .services-section, .final-cta-section { padding-left: 30px; padding-right: 30px; }
         }
 
+        /* ── OTIMIZAÇÃO EXTREMA PARA DISPOSITIVOS MÓVEIS ── */
+        @media (max-width:768px) {
+            .hero-r { height: 65svh; min-height: 420px; }
+            .contact-overlay { bottom: 12px; gap: 8px; }
+            .contact-pill { padding: 12px 16px; max-width: 250px; box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+            .pill-name { font-size: 1.05rem; }
+            .pill-tag { font-size: 0.4rem; letter-spacing: 0.3em; margin-bottom: 2px; }
+            .pill-divider { margin: 8px 0; }
+            .pill-actions { margin-top: 4px; padding-top: 8px; gap: 18px; }
+            .social-link svg { width: 18px !important; height: 18px !important; }
+        }
+
         /* ── DETAIL VIEW ── */
         .view-hidden { display: none !important; }
         .view-fade { animation: fadeIn 0.8s ease forwards; }
@@ -275,10 +287,11 @@
             
             .detail-page { padding: 0 !important; margin: 0 !important; max-width: 100% !important; background: #fff !important; }
             
+            /* Grelha Corrigida: Linha 1 ajustável (Header), Linha 2 fluida (Descrição) */
             .detail-main-grid { 
                 display: grid !important; 
                 grid-template-columns: 50vw 50vw !important; 
-                grid-template-rows: 100vh !important; 
+                grid-template-rows: auto 1fr !important; 
                 width: 100vw !important; 
                 height: 100vh !important; 
                 margin: 0 !important; 
@@ -291,16 +304,18 @@
             .detail-header-col { 
                 grid-column: 1 / 2 !important; 
                 grid-row: 1 / 2 !important; 
-                padding: 6vh 6vw 6vh 6vw !important; 
+                padding: 6vh 6vw 2vh 6vw !important; 
                 display: flex !important; 
                 flex-direction: column !important; 
-                justify-content: center !important; 
+                justify-content: flex-end !important; 
                 box-sizing: border-box !important;
-                height: 100vh !important;
+                height: auto !important; /* CORREÇÃO: Remove o bloqueio de 100vh */
             }
             
             .detail-desc-col { 
                 display: block !important;
+                grid-column: 1 / 2 !important; 
+                grid-row: 2 / 3 !important; 
                 padding: 0 6vw 6vh 6vw !important; 
                 margin: 0 !important; 
                 overflow: hidden !important; 
@@ -349,10 +364,11 @@
                 line-height: 1.5 !important; 
                 color: #333 !important; 
                 display: -webkit-box !important; 
-                -webkit-line-clamp: 16 !important; 
+                -webkit-line-clamp: 14 !important; 
                 -webkit-box-orient: vertical !important; 
                 overflow: hidden !important; 
                 text-align: justify !important;
+                margin: 0 !important;
             }
             
             .detail-gallery { 
